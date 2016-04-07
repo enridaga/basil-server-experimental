@@ -15,6 +15,44 @@
 			<artifactId>basil-server</artifactId>
 			<version>0.4.0-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.aksw.jena-sparql-api</groupId>
+			<artifactId>jena-sparql-api-cache</artifactId>
+			<version>3.0.1-2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-arq</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-base</artifactId>
+			<version>3.0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-slf4j-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -84,4 +122,20 @@
 			</resource>
 		</resources>
 	</build>
+	<description>Server including multiple query executors</description>
+	
+	
+	 <repositories>
+        <repository>
+            <id>maven.aksw.snapshots</id>
+            <name>AKSW Snapshot Repository</name>
+            <url>http://maven.aksw.org/archiva/repository/snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
