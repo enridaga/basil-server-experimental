@@ -1,5 +1,8 @@
 package enridaga.basil.server.experimental;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.aksw.jena_sparql_api.concept_cache.core.OpExecutionFactoryViewCache;
 import org.aksw.jena_sparql_api.concept_cache.core.QueryExecutionFactoryViewCacheMaster;
 import org.aksw.jena_sparql_api.core.FluentQueryExecutionFactory;
@@ -21,7 +24,7 @@ import uk.ac.open.kmi.basil.invoke.QueryExecutor;
 
 public class CachedExecutor implements QueryExecutor {
 	private static OpExecutionFactoryViewCache opExecutionFactory;
-
+	
 	private static final Logger log = LoggerFactory.getLogger(CachedExecutor.class);
 
 	static {
@@ -31,20 +34,29 @@ public class CachedExecutor implements QueryExecutor {
 		QC.setFactory(ARQ.getContext(), opExecutionFactory);
 	}
 
+	private static final Map<String,QueryExecutionFactory> caches = new HashMap<String,QueryExecutionFactory>();
+
 	public CachedExecutor() {
 
+	}
+	
+	private QueryExecutionFactory getFactory(String endpoint){
+		if(!caches.containsKey(endpoint)){
+			QueryExecutionFactory baseQef = //QueryExecutionFactory.sparqlService(endpoint, q);
+					FluentQueryExecutionFactory.http(endpoint)
+					.config()
+			        .withParser(SparqlQueryParserImpl.create(Syntax.syntaxARQ))
+			        .withQueryTransform(F_QueryTransformDatesetDescription.fn).end().create();
+			QueryExecutionFactory qef = new QueryExecutionFactoryViewCacheMaster(baseQef, opExecutionFactory.getServiceMap());
+			caches .put(endpoint, qef);
+		}
+		return caches.get(endpoint);
 	}
 
 	@Override
 	public InvocationResult execute(Query q, String endpoint) throws ApiInvocationException {
 		log.info("Invoking cached executor");
-		QueryExecutionFactory baseQef = //QueryExecutionFactory.sparqlService(endpoint, q);
-				FluentQueryExecutionFactory.http(endpoint)
-				.config()
-		        .withParser(SparqlQueryParserImpl.create(Syntax.syntaxARQ))
-		        .withQueryTransform(F_QueryTransformDatesetDescription.fn).end().create();
-		QueryExecutionFactory qef = new QueryExecutionFactoryViewCacheMaster(baseQef, opExecutionFactory.getServiceMap());
-		QueryExecution qe = qef.createQueryExecution(q);
+		QueryExecution qe = getFactory(endpoint).createQueryExecution(q);
 		if (q.isSelectType()) {
 			return new InvocationResult(qe.execSelect(), q);
 //		} else
