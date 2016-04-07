@@ -20,18 +20,18 @@ import uk.ac.open.kmi.basil.core.exceptions.ApiInvocationException;
 import uk.ac.open.kmi.basil.invoke.QueryExecutor;
 
 public class CachedExecutor implements QueryExecutor {
-	OpExecutionFactoryViewCache opExecutionFactory;
+	private static OpExecutionFactoryViewCache opExecutionFactory;
 
 	private static final Logger log = LoggerFactory.getLogger(CachedExecutor.class);
 
 	static {
 		log.info("Loading CachedExecutor");
 		ARQ.init();
+		opExecutionFactory = new OpExecutionFactoryViewCache();
+		QC.setFactory(ARQ.getContext(), opExecutionFactory);
 	}
 
 	public CachedExecutor() {
-		opExecutionFactory = new OpExecutionFactoryViewCache();
-		QC.setFactory(ARQ.getContext(), opExecutionFactory);
 
 	}
 
